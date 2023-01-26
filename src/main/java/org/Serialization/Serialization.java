@@ -11,9 +11,7 @@ public class Serialization {
 
     }
     public static void serializeToCsv(Car classInstance, String fileName){
-        String carModel = classInstance.getModel();
-        int carYear = classInstance.getYear();
-        String writeData = carModel+","+Integer.toString(carYear);
+        String writeData = Serialization.prettyPrintToCSV(classInstance);
         try{
             Files.write(Paths.get(fileName), writeData.getBytes());
         }
@@ -51,5 +49,10 @@ public class Serialization {
         }
         return returnCar;
     }
-    public String prettyPrintToCSV(){return "";}
+    public static String prettyPrintToCSV(Car c){
+        String carModel = c.getModel();
+        int carYear = c.getYear();
+        String writeData = carModel+","+Integer.toString(carYear);
+        return writeData;
+    }
 }
