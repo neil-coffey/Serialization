@@ -8,18 +8,21 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Car implements Vehicle {
+public class Motorcycle implements Vehicle {
     private String model;
     private int year;
+    private double tankSize;
 
-    public Car(String model, int year) {
+    public Motorcycle(String model, int year, double tankSize) {
         this.model = model;
         this.year = year;
+        this.tankSize = tankSize;
     }
 
-    public Car() {
+    public Motorcycle() {
         this.model = model = "";
         this.year = 0;
+        this.tankSize = 0;
     }
 
     public int getYear() {
@@ -28,6 +31,10 @@ public class Car implements Vehicle {
 
     public String getModel() {
         return this.model;
+    }
+
+    public double getTankSize() {
+        return tankSize;
     }
 
     public void serializeToCsv(String fileName) {
@@ -43,37 +50,41 @@ public class Car implements Vehicle {
 
     @Override
     public Vehicle deserializeFromCSV(String fileName) {
-        Car returnCar = new Car();
+        Motorcycle returnMotorcycle = new Motorcycle();
         try {
             List<String> lines = Files.readAllLines(Paths.get(fileName));
             for (String line : lines) {
                 if (line.trim().equals("")) {
                     continue;
                 } else {
-                    String[] carAttributesArray = line.trim().split(Pattern.quote(","));
-                    returnCar = new Car(carAttributesArray[0].trim(), Integer.parseInt(carAttributesArray[1].trim()));
+                    String[] MotorcycleAttributesArray = line.trim().split(Pattern.quote(","));
+                    returnMotorcycle = new Motorcycle(MotorcycleAttributesArray[0].trim(),
+                            Integer.parseInt(MotorcycleAttributesArray[1].trim()),
+                            Double.parseDouble(MotorcycleAttributesArray[1].trim()));
                     lines.remove(line);
                     StringBuilder writeString = new StringBuilder();
                     for (String writeLine : lines) {
                         writeString.append(writeLine + "\n");
                     }
                     Files.write(Paths.get(fileName), writeString.toString().getBytes());
-                    return returnCar;
+                    return returnMotorcycle;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return returnCar;
+        return returnMotorcycle;
     }
 
     ;
 
     @Override
     public String prettyPrintToCSV() {
-        String carModel = this.getModel();
-        int carYear = this.getYear();
-        String writeData = "\n" + carModel + "," + Integer.toString(carYear);
+        String motorcycleModel = this.getModel();
+        int motorcycleYear = this.getYear();
+        double motorcycleTank = this.getTankSize();
+        String writeData = "\n" + motorcycleModel + "," + Integer.toString(motorcycleYear) + "," +
+                Double.toString(motorcycleTank);
         return writeData;
     }
 
@@ -85,11 +96,11 @@ public class Car implements Vehicle {
             return true;
         }
 
-        if (!(o instanceof Car)) {
+        if (!(o instanceof Motorcycle)) {
             return false;
         }
 
-        Car c = (Car) o;
+        Motorcycle c = (Motorcycle) o;
 
         return this.year == c.year && this.model.equals(c.model);
     }
